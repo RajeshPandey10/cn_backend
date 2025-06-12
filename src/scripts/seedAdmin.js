@@ -1,19 +1,17 @@
-import mongoose from "mongoose";
 import dotenv from "dotenv";
-import bcrypt from "bcryptjs";
-import User from "../src/models/user.model.js";
-
 dotenv.config();
 
-const MONGODB_URL = process.env.MONGODB_URL;
+import connectDB from "../database/db.js";
+import User from "../models/user.model.js";
+import bcrypt from "bcryptjs";
+
 
 const seedAdmin = async () => {
   try {
-    await mongoose.connect(MONGODB_URL);
-    console.log("Connected to MongoDB");
+    await connectDB();
 
-    const adminEmail = "admin@cnmart.com";
-    const adminPassword = "admin123"; // Change this in production!
+    const adminEmail = "admin@gmail.com";
+    const adminPassword = "admin123";
     const existingAdmin = await User.findOne({
       email: adminEmail,
       role: "admin",
@@ -24,6 +22,7 @@ const seedAdmin = async () => {
     }
     const hashedPassword = await bcrypt.hash(adminPassword, 10);
     const admin = new User({
+      name: "Admin",
       username: "admin",
       email: adminEmail,
       password: hashedPassword,
