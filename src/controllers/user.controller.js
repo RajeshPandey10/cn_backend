@@ -3,6 +3,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
+import mongoose from "mongoose";
 
 export const register = async (req, res) => {
   try {
@@ -109,6 +110,12 @@ export const logout = async (req, res) => {
 export const getProfile = async (req, res) => {
   try {
     const userId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        message: "Invalid user ID",
+        success: false,
+      });
+    }
     const user = await User.findById(userId).select("-password");
     if (!user) {
       return res.status(404).json({
@@ -147,7 +154,6 @@ export const editProfile = async (req, res) => {
       user.profilepicture = cloudResponse.secure_url;
     }
 
-    // Update other fields
     user.username = username || user.username;
     user.email = email || user.email;
     user.phone = phone || user.phone;
@@ -163,10 +169,27 @@ export const editProfile = async (req, res) => {
         email: user.email,
         profilepicture: user.profilepicture,
         phone: user.phone,
+        role: user.role,
       },
     });
   } catch (error) {
     console.error("Error updating user profile:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getAllUsers = async (req, res) => {
+  // Only allow admin to access this endpoint
+  if (!req.user || req.user.role !== "admin") {
+    return res.status(403).json({
+      success: false,
+      message: "Admin access denied",
+    });
+  }
+  try {
+    const users = await User.find().select("-password");
+    res.json({ success: true, users });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ success: false, message: "Failed to fetch users" });
   }
 };

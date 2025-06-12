@@ -16,7 +16,7 @@ const productSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      required: true,
+      default:"other",
     },
     image: {
       type: String,
@@ -24,27 +24,13 @@ const productSchema = new mongoose.Schema(
     },
     stock: {
       type: Number,
-      required: true,
       default: 0,
     },
-    rating: {
-      type: Number,
-      default: 0,
-    },
-    reviews: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Review",
-      },
-    ],
-    totalReviews: {
-      type: Number,
-      default: 0,
-    },
+  
     unit: {
       // added unit field (for example: liter, kg, piece)
       type: String,
-      default: "",
+      require:true
     },
   },
   {
