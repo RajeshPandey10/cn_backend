@@ -29,7 +29,7 @@ const PORT = process.env.PORT || 3000;
 // Routes
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/admin", adminRoute);
-app.use("/api/v1/product", productRoute);
+app.use("/api/v1/products", productRoute);
 app.use("/api/v1/order", orderRoute);
 app.use("/api/v1/cart", cartRoute);
 app.use("/api/v1/wishlist", wishlistRoute);
