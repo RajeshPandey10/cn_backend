@@ -4,4 +4,4 @@ const catchAsyncErrors = (fn) => {
   };
 };
 
-module.exports = catchAsyncErrors; 
+export default catchAsyncErrors;
